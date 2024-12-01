@@ -11,8 +11,8 @@ from config.database.queries_table import DatabaseQueries
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         token = request.headers.get("Authorization", "").replace("Bearer ", "")
-        user_id = None  # Значение по умолчанию
-        role = "guest"          # Значение по умолчанию
+        user_id = None  
+        role = "guest"          
 
         if token:
             try:
@@ -37,7 +37,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "timestamp": end_time,
         }
 
-        # Логируем данные в любом случае
+        
         await DatabaseQueries.add_log_from_dict(log_entry)
 
         return response

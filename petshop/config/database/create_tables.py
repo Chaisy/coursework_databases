@@ -1,7 +1,7 @@
 from config.project_config import Database
 
 class TableCreator:
-    # Функция для создания таблицы Roles
+    
     @staticmethod
     async def create_roles_table():
         query = '''
@@ -12,7 +12,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Coupons
+    
     @staticmethod
     async def create_coupons_table():
         query = '''
@@ -23,7 +23,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Users
+    
     @staticmethod
     async def create_users_table():
         query = '''
@@ -39,7 +39,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Carts
+    
     @staticmethod
     async def create_carts_table():
         query = '''
@@ -51,7 +51,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Firms
+    
     @staticmethod
     async def create_firms_table():
         query = '''
@@ -62,7 +62,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Animals
+    
     @staticmethod
     async def create_animals_table():
         query = '''
@@ -73,7 +73,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы CategoriesOfGood
+    
     @staticmethod
     async def create_categories_of_good_table():
         query = '''
@@ -84,7 +84,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Goods
+    
     @staticmethod
     async def create_goods_table():
         query = '''
@@ -98,7 +98,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы Orders
+    
     @staticmethod
     async def create_orders_table():
         query = '''
@@ -110,7 +110,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы OrderGoods
+    
     @staticmethod
     async def create_order_goods_table():
         query = '''
@@ -125,7 +125,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания таблицы CartsGoods
+    
     @staticmethod
     async def create_carts_goods_table():
         query = '''
@@ -152,7 +152,7 @@ class TableCreator:
             '''
         await Database.connection.execute(query)
 
-    # Функция для создания всех таблиц
+    
     @staticmethod
     async def create_all_tables():
         await TableCreator.create_roles_table()

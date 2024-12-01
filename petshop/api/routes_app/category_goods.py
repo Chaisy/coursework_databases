@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[dict])
 async def get_all_categories(current_admin: TokenData = Depends(get_current_user)):
-    # Получение данных из базы
+    
     categories = await DatabaseQueries.get_all_categories()
 
     if not categories:

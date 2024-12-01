@@ -14,9 +14,9 @@ router = APIRouter()
 
 @router.get("/users", response_model=List[User])
 async def get_users(current_admin: TokenData = Depends(get_admin_user)):
-    users = await DatabaseQueries.get_users()  # Получаем всех пользователей из БД
+    users = await DatabaseQueries.get_users()  
     if not users:
-        raise HTTPException(status_code=404, detail="Users not found")  # Возвращаем ошибку, если пользователей нет
+        raise HTTPException(status_code=404, detail="Users not found")  
     return users
 
 @router.get("/user/{user_id}", response_model=dict)
@@ -30,15 +30,15 @@ async def get_user_profile_by_id(user_id: UUID,
 
 @router.patch("/user/{user_id}", response_model=dict)
 async def update_user_profile(user_id: UUID, user_update: UserUpdate, current_admin: TokenData = Depends(get_admin_user)):
-    # Преобразуем данные из схемы в обычный словарь
+    
     update_data = user_update.dict(exclude_unset=True)
 
-    # Вызываем метод для обновления данных пользователя
+    
     success = await DatabaseQueries.update_user(user_id, update_data)
     if not success:
         raise HTTPException(status_code=404, detail="This data is already exists")
 
-    # Возвращаем обновленные данные
+    
     updated_user = await DatabaseQueries.get_user_profile(user_id)
     return updated_user
 

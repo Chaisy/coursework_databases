@@ -8,7 +8,7 @@ from config.database.queries_table import DatabaseQueries
 from schemas.schemas import AnimalCreate
 
 
-# Схема Animal
+
 class Animal(BaseModel):
     id: UUID
     type: str
@@ -16,17 +16,17 @@ class Animal(BaseModel):
     class Config:
         from_attributes = True
 
-# Создаем маршрутизатор
+
 router = APIRouter()
 
 
 @router.get("/", response_model=List[Animal])
 async def get_all_animals():
     try:
-        # Получение данных из базы
+        
         animals = await DatabaseQueries.get_all_animals()
 
-        # Преобразование имен полей из базы в ожидаемые схемой
+        
         formatted_animals = [{"id": row["id"], "type": row["type"]} for row in animals]
 
         if not formatted_animals:
@@ -52,9 +52,9 @@ async def create_animal(animal: AnimalCreate,
     if not animal.type:
         raise HTTPException(status_code=400, detail="Type field must be filled")
 
-    # Попытка создать запись в базе
+    
     animal_data = await DatabaseQueries.create_animal(animal.type)
-    print("Animal Data:", animal_data)  # Отладка
+    print("Animal Data:", animal_data)  
 
     if not animal_data:
         raise HTTPException(status_code=500, detail="Animal could not be created")
@@ -64,9 +64,9 @@ async def create_animal(animal: AnimalCreate,
 @router.delete("/{animal_id}", response_model=dict)
 async def delete_animal_by_id(
     animal_id: UUID,
-    current_admin: TokenData = Depends(get_admin_user)  # Проверяем, что это админ
+    current_admin: TokenData = Depends(get_admin_user)  
 ):
-    # Удаляем животное
+    
     is_deleted = await DatabaseQueries.delete_animal(animal_id)
     if not is_deleted:
         raise HTTPException(status_code=404, detail="Animal not found or could not be deleted")

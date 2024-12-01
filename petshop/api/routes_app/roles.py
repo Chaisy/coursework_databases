@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[dict])
 async def get_all_roles(current_admin: TokenData = Depends(get_admin_user)):
-    # Получение данных из базы
+    
     roles = await DatabaseQueries.get_all_roles()
 
     if not roles:

@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/coupons", response_model=List[dict])
 async def get_all_coupons(current_admin: TokenData = Depends(get_current_user)):
-    # Получение данных из базы
+    
     coupons = await DatabaseQueries.get_all_coupons()
 
     if not coupons:

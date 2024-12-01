@@ -9,19 +9,19 @@ router = APIRouter()
 
 
 
-# Получение всех заказов
+
 @router.get("/orders", response_model=List[dict])
 async def get_all_orders(current_admin: TokenData = Depends(get_admin_user)):
     return await DatabaseQueries.get_all_orders()
 
 
-# Получение заказов пользователя
+
 @router.get("/orders/user/{user_id}", response_model=List[dict])
 async def get_orders_by_user_id(user_id: UUID, current_admin: TokenData = Depends(get_admin_user)):
     return await DatabaseQueries.get_orders_by_user_id(user_id)
 
 
-# Получение товаров заказа
+
 @router.get("/orders/{order_id}/goods", response_model=List[UUID])
 async def get_order_goods(order_id: UUID, current_admin: TokenData = Depends(get_current_user)):
     goods = await DatabaseQueries.get_order_goods(order_id)

@@ -51,9 +51,9 @@ class Order:
         self.id = id_
         self.user_id = user_id
 
-        # {
-        #     "title": "Ball",
-        #     "firm_id": "bd502726-21a2-42c7-9e91-e0dde7cfc009",
-        #     "category_of_good_id": "cbb50cf7-e6b1-44c6-8f76-dde5d221db58",
-        #     "animal_id": "c796a7bd-05fb-47cf-82e3-49c50649d621"
-        # }
+        
+        
+        
+        
+        
+        

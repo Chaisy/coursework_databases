@@ -47,7 +47,7 @@ class DatabaseQueries:
 
 
 
-    # Пример для использования зависимости FastAPI:
+    
     @staticmethod
     async def get_good_by_animal(animal_get: str) -> Optional[List[dict]]:
         if not animal_get:
@@ -65,7 +65,7 @@ class DatabaseQueries:
             print(f"Error in get_good_by_animal: {e}")
             return None
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     @staticmethod
     async def get_users() -> List[dict]:
         query = "SELECT u.Id, u.name, u.banned FROM Users u;"
@@ -90,12 +90,12 @@ class DatabaseQueries:
 
     @staticmethod
     async def update_user(user_id: UUID, update_data: dict) -> bool:
-        # Строим SQL-запрос с учетом переданных данных
+        
         set_clause = []
         values = []
-        index = 1  # Для нумерации параметров
+        index = 1  
 
-        # Динамическое добавление полей, которые нужно обновить
+        
         if update_data.get("Login"):
             set_clause.append(f"Login = ${index}")
             values.append(update_data["Login"])
@@ -110,11 +110,11 @@ class DatabaseQueries:
             index += 1
 
         print(set_clause)
-        # Если нет данных для обновления, возвращаем False
+        
         if not set_clause:
             return False
 
-        # Строим финальный запрос
+        
         query = f"""
             UPDATE Users
             SET {', '.join(set_clause)}
@@ -133,7 +133,7 @@ class DatabaseQueries:
 
     @staticmethod
     async def delete_user(user_id: UUID) -> bool:
-        # Сначала удаляем корзину пользователя
+        
         cart_deleted = await DatabaseQueries.delete_cart(user_id)
         if not cart_deleted:
             print("Error: Cart could not be deleted.")
@@ -143,29 +143,29 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, user_id)
-            return result is not None  # Если пользователь был удален, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_user: {e}")
             return False
 
     @staticmethod
     async def create_user(login: str, password: str, name: str) -> Optional[UserProfile]:
-        default_role_id = 'b3b9d771-010e-432d-9f06-f36e2269465f'  # Уникальный UUID для роли
+        default_role_id = 'b3b9d771-010e-432d-9f06-f36e2269465f'  
         query = """
                 INSERT INTO Users (Login, Password, Name, RoleId, CouponId, Banned)
                 VALUES ($1, $2, $3, $4, NULL, FALSE)  -- Значения по умолчанию для RoleId, CouponId, и Banned
                 RETURNING Id, Login, Name, RoleId, CouponId, Banned;
             """
         try:
-            # Передаем default_role_id как параметр
+            
             result = await Database.connection.fetchrow(query, login, password, name, default_role_id)
             if result:
-                # Создаем корзину для пользователя
+                
                 await DatabaseQueries.create_cart(result['id'])
 
-                # Преобразуем результат в объект UserProfile с добавлением CartId
-                user = UserProfile(**result)  # Передаем результат как аргументы в конструктор UserProfile
-                return user  # Убедитесь, что результат соответствует схеме UserProfile
+                
+                user = UserProfile(**result)  
+                return user  
             return None
         except Exception as e:
             print(f"Error in create_user: {e}")
@@ -199,10 +199,10 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, animal_type)
-            print("DB Result:", result)  # Отладка
+            print("DB Result:", result)  
 
             if result:
-                # Преобразование результата в объект Animal
+                
                 return Animal(id=result["id"], type=result["type"])
             return None
         except Exception as e:
@@ -216,7 +216,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, animal_id)
-            return result is not None  # Если животное было удалено, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_animal: {e}")
             return False
@@ -249,10 +249,10 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, firm_name)
-            print("DB Result:", result)  # Отладка
+            print("DB Result:", result)  
 
             if result:
-                # Преобразование результата в объект Animal
+                
                 return Firm(id=result["id"], naming=result["naming"])
             return None
         except Exception as e:
@@ -266,7 +266,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, firm_id)
-            return result is not None  # Если животное было удалено, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_firm: {e}")
             return False
@@ -302,7 +302,7 @@ class DatabaseQueries:
 
 
             if result:
-                # Преобразование результата в объект Animal
+                
                 return Coupon(id=result["id"], sale=result["sale"])
             return None
         except Exception as e:
@@ -316,7 +316,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, coupon_id)
-            return result is not None  # Если животное было удалено, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_coupon: {e}")
             return False
@@ -352,7 +352,7 @@ class DatabaseQueries:
             result = await Database.connection.fetchrow(query, role_name)
 
             if result:
-                # Преобразование результата в объект Animal
+                
                 return Role(id=result["id"], name=result["name"])
             return None
         except Exception as e:
@@ -366,7 +366,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, role_id)
-            return result is not None  # Если животное было удалено, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_role: {e}")
             return False
@@ -402,7 +402,7 @@ class DatabaseQueries:
             result = await Database.connection.fetchrow(query, category_title)
 
             if result:
-                # Преобразование результата в объект Animal
+                
                 return Category(id=result["id"], title=result["title"])
             return None
         except Exception as e:
@@ -416,7 +416,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, category_id)
-            return result is not None  # Если животное было удалено, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_role: {e}")
             return False
@@ -429,10 +429,10 @@ class DatabaseQueries:
             RETURNING Id, UserId, Goods;
         """
         try:
-            # Создаем корзину с пустым списком товаров
+            
             result = await Database.connection.fetchrow(query, user_id, [])
             if result:
-                return dict(result)  # Возвращаем информацию о созданной корзине
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in create_cart: {e}")
@@ -440,14 +440,14 @@ class DatabaseQueries:
 
     @staticmethod
     async def add_good_to_cart(cart_id: UUID, good_id: UUID) -> Optional[dict]:
-        # Проверка, существует ли товар в модели Goods
+        
         query_check_good = "SELECT 1 FROM Goods WHERE Id = $1 LIMIT 1;"
         good_exists = await Database.connection.fetchval(query_check_good, good_id)
 
         if not good_exists:
             raise HTTPException(status_code=404, detail="Good not found")
 
-        # Если товар существует, добавляем его в корзину
+        
         query = """
             UPDATE Carts
             SET Goods = array_append(Goods, $1)
@@ -457,7 +457,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchrow(query, good_id, cart_id)
             if result:
-                return dict(result)  # Возвращаем обновленную корзину
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in add_good_to_cart: {e}")
@@ -474,7 +474,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchrow(query, good_id, cart_id)
             if result:
-                return dict(result)  # Возвращаем обновленную корзину
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in remove_good_from_cart: {e}")
@@ -490,7 +490,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchval(query, cart_id)
             if result is not None:
-                return result  # Возвращаем список товаров
+                return result  
             return None
         except Exception as e:
             print(f"Error in get_cart_goods: {e}")
@@ -503,7 +503,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchrow(query, user_id)
             if result:
-                return dict(result)  # Возвращаем информацию о корзине
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in get_cart_by_user_id: {e}")
@@ -516,7 +516,7 @@ class DatabaseQueries:
         """
         try:
             result = await Database.connection.fetchrow(query, cart_id)
-            return result is not None  # Если корзина была удалена, возвращаем True
+            return result is not None  
         except Exception as e:
             print(f"Error in delete_cart: {e}")
             return False
@@ -531,7 +531,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchrow(query, user_id)
             if result:
-                return dict(result)  # Возвращаем информацию о созданном заказе
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in create_order: {e}")
@@ -552,12 +552,12 @@ class DatabaseQueries:
 
     @staticmethod
     async def add_good_to_order(user_id: UUID, good_id: UUID) -> Optional[dict]:
-        # Проверяем существование товара
+        
         good_exists = await DatabaseQueries.check_good_exists(good_id)
         if not good_exists:
             raise HTTPException(status_code=400, detail="Good not found")
 
-        # Проверяем, есть ли у пользователя корзина и удаляем товар из неё, если он есть
+        
         query_get_cart = """
             SELECT Id
             FROM Carts
@@ -567,7 +567,7 @@ class DatabaseQueries:
         if cart_id:
             await DatabaseQueries.remove_good_from_cart(cart_id, good_id)
 
-        # Проверяем, есть ли у пользователя активный заказ
+        
         query_get_order = """
             SELECT Id
             FROM Orders
@@ -575,7 +575,7 @@ class DatabaseQueries:
         """
         existing_order_id = await Database.connection.fetchval(query_get_order, user_id)
 
-        # Если заказа нет, создаем его
+        
         if not existing_order_id:
             create_order_query = """
                 INSERT INTO Orders (UserId, Goods)
@@ -585,13 +585,13 @@ class DatabaseQueries:
             try:
                 result = await Database.connection.fetchrow(create_order_query, user_id, good_id)
                 if result:
-                    return dict(result)  # Возвращаем созданный заказ с товаром
+                    return dict(result)  
                 return None
             except Exception as e:
                 print(f"Error in create_order within add_good_to_order: {e}")
                 raise HTTPException(status_code=500, detail="Failed to create order")
         else:
-            # Если заказ существует, добавляем товар в него
+            
             add_good_query = """
                 UPDATE Orders
                 SET Goods = array_append(Goods, $1)
@@ -601,7 +601,7 @@ class DatabaseQueries:
             try:
                 result = await Database.connection.fetchrow(add_good_query, good_id, existing_order_id)
                 if result:
-                    return dict(result)  # Возвращаем обновленный заказ
+                    return dict(result)  
                 return None
             except Exception as e:
                 print(f"Error in add_good_to_order: {e}")
@@ -635,7 +635,7 @@ class DatabaseQueries:
             result = await Database.connection.fetchrow(query, good_id, order_id)
 
             if result:
-                # Если товаров больше нет в заказе, удаляем заказ
+                
                 if not result["goods"]:
                     delete_order_query = """
                         DELETE FROM Orders
@@ -643,7 +643,7 @@ class DatabaseQueries:
                     """
                     await Database.connection.execute(delete_order_query, order_id)
                     return {"detail": "Order deleted because it was empty"}
-                return dict(result)  # Возвращаем обновленный заказ с оставшимися товарами
+                return dict(result)  
             return None
         except Exception as e:
             print(f"Error in remove_good_from_order: {e}")
@@ -659,7 +659,7 @@ class DatabaseQueries:
         try:
             result = await Database.connection.fetchval(query, order_id)
             if result is not None:
-                return result  # Возвращаем список товаров
+                return result  
             return None
         except Exception as e:
             print(f"Error in get_order_goods: {e}")
@@ -737,7 +737,7 @@ class DatabaseQueries:
 
     @staticmethod
     async def update_good(good_id: UUID, good_update: GoodUpdate) -> Optional[Good]:
-        # Получаем текущие значения записи
+        
         query_get_current = "SELECT * FROM Goods WHERE Id = $1;"
         current_good = await Database.connection.fetchrow(query_get_current, good_id)
         if not current_good:

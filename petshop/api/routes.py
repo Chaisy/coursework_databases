@@ -11,8 +11,8 @@ from api.routes_app.orders import router as order_router
 from api.routes_app.logs import router as log_router
 from api.routes_app.auth import router as auth_router
 
-# 31b764ef-a462-4c82-a672-3aafd8f9c93b
-# 0fcd1ce3-737d-46aa-b269-d6741d8dcf5d
+
+
 
 def get_apps_router() -> APIRouter:
     router = APIRouter()

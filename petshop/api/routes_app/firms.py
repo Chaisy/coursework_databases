@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/firms", response_model=List[dict])
 async def get_all_firms(current_admin: TokenData = Depends(get_current_user)):
-    # Получение данных из базы
+    
     firms = await DatabaseQueries.get_all_firms()
 
     if not firms:

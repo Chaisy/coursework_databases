@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
-        # Декодируем токен и извлекаем информацию
+        
         token_data = decode_access_token(token)
         return token_data
     except Exception as e:
@@ -31,51 +31,51 @@ async def get_admin_user(token: str = Depends(oauth2_scheme)):
         token_data = decode_access_token(token)
         user_id = token_data.user_id
 
-        # Получаем информацию о пользователе
+        
         user = await DatabaseQueries.get_user_profile(user_id)
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         print(user)
 
-        # Проверяем роль пользователя через таблицу Roles
+        
         role_id = user["roleid"]
         print(role_id)
         role = await DatabaseQueries.get_role_by_id(role_id)
         print(role)
 
-        if not role or role != "admin":  # Проверяем, что роль называется "admin"
+        if not role or role != "admin":  
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access forbidden: Admin only")
 
-        return token_data  # Возвращаем информацию о пользователе
+        return token_data  
 
 @router.post("/login", response_model=Token)
 async def login(login_request: LoginRequest):
-    # Получаем пользователя из базы данных
+    
     user = await DatabaseQueries.get_user_by_login(login_request.username)
 
-    # Проверяем, существует ли пользователь и совпадает ли пароль
+    
     if not user or login_request.password != user["password"]:
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
-    # Если пользователь забанен
+    
     if user["banned"]:
         raise HTTPException(status_code=403, detail="User is banned")
 
-    # Создаём данные для токена
+    
     token_data = {
         "user_id": str(user["id"]),
         "role": str(user["roleId"]),
     }
 
-    # Генерируем access token
+    
     access_token = create_access_token(token_data, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
 
-    # Возвращаем токен
+    
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/logout")
 async def logout(token: str = Depends(oauth2_scheme)):
-    # Добавляем токен в черный список
+    
     blacklist_token(token)
     return {"message": "Successfully logged out"}
 
@@ -102,33 +102,33 @@ async def update_user_profile(
     user_update: UserUpdate,
     current_user: TokenData = Depends(get_current_user),
 ):
-    user_id = current_user.user_id  # Берем ID из токена
+    user_id = current_user.user_id  
 
-    # Преобразуем данные из схемы в словарь, исключая незаданные поля
+    
     update_data = user_update.dict(exclude_unset=True)
 
-    # Вызываем метод для обновления данных пользователя
+    
     success = await DatabaseQueries.update_user(user_id, update_data)
     if not success:
         raise HTTPException(status_code=404, detail="This data is already exists")
 
-    # Возвращаем обновленные данные
+    
     updated_user = await DatabaseQueries.get_user_profile(user_id)
     return updated_user
 
 
 @router.post("/register", response_model=UserProfile)
 async def create_user(user: UserCreate):
-    # Проверка, что все обязательные поля заполнены
+    
     if not user.login or not user.password or not user.name:
         raise HTTPException(status_code=400, detail="All fields must be filled")
 
-    # Пытаемся создать пользователя в базе данных
+    
     user_data = await DatabaseQueries.create_user(user.login, user.password, user.name)
 
-    # Если пользователь не был создан, выбрасываем ошибку
+    
     if not user_data:
         raise HTTPException(status_code=400, detail="User could not be created")
 
-    # Преобразуем данные в UserProfile и возвращаем
+    
     return user_data

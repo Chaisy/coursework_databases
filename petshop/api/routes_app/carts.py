@@ -42,10 +42,10 @@ async def remove_good_from_cart(item: CartItemUpdate,
         raise HTTPException(status_code=404, detail="Cart not found or unable to remove good")
     return result
 
-# Метод для получения товаров в корзине
+
 @router.get("/carts/{cart_id}/goods", response_model=List[UUID])
 async def get_cart_goods(cart_id: UUID, current_admin: TokenData = Depends(get_current_user)):
-    goods = await DatabaseQueries.get_cart_goods(cart_id)  # В вашем случае это метод из CartService
+    goods = await DatabaseQueries.get_cart_goods(cart_id)  
     if goods is None:
         raise HTTPException(status_code=404, detail="Cart not found or no goods in cart")
     return goods

@@ -22,9 +22,9 @@ class OrderItemUpdate(BaseModel):
     good_id: UUID
 
 class Order(BaseModel):
-    id: UUID  # ID заказа
-    userId: UUID  # ID пользователя
-    goods: List[UUID] = []  # Список ID товаров
+    id: UUID  
+    userId: UUID  
+    goods: List[UUID] = []  
 
     class Config:
         from_attributes = True
@@ -65,65 +65,65 @@ class CartItemUpdate(BaseModel):
     good_id: UUID
 
 class Cart(BaseModel):
-    id: UUID  # ID корзины
-    userId: UUID  # ID пользователя, которому принадлежит корзина
-    goods: List[UUID] = []  # Список ID товаров
+    id: UUID  
+    userId: UUID  
+    goods: List[UUID] = []  
 
     class Config:
         from_attributes = True
         alias_generator = lambda name: name.lower()
 
 class Category(BaseModel):
-    id: UUID  # ID фирмы (UUID)
-    title: str  # Название фирмы
+    id: UUID  
+    title: str  
 
     class Config:
         from_attributes = True
 
 class CategoryCreate(BaseModel):
-    title: str  # Название фирмы, обязательное поле
+    title: str  
 
     class Config:
         from_attributes = True
 
 class Role(BaseModel):
-    id: UUID  # ID фирмы (UUID)
-    name: str  # Название фирмы
+    id: UUID  
+    name: str  
 
     class Config:
         from_attributes = True
 
 class RoleCreate(BaseModel):
-    name: str  # Название фирмы, обязательное поле
+    name: str  
 
     class Config:
         from_attributes = True
 
 class Coupon(BaseModel):
-    id: UUID  # ID фирмы (UUID)
-    sale: int  # Название фирмы
+    id: UUID  
+    sale: int  
 
     class Config:
         from_attributes = True
 
 class CouponCreate(BaseModel):
-    sale: int  # Название фирмы, обязательное поле
+    sale: int  
 
     class Config:
         from_attributes = True
 
 class Firm(BaseModel):
-    id: UUID  # ID фирмы (UUID)
-    naming: str  # Название фирмы
+    id: UUID  
+    naming: str  
 
     class Config:
         from_attributes = True
 
 class FirmCreate(BaseModel):
-    naming: str  # Название фирмы, обязательное поле
+    naming: str  
 
     class Config:
-        from_attributes = True  # Настройка для работы с ORM, если используешь такую модель в будущем
+        from_attributes = True  
 
 
 class Animal(BaseModel):
@@ -144,18 +144,18 @@ class UserCreate(BaseModel):
         from_attributes = True
 
 class UserUpdate(BaseModel):
-    Login: Optional[str] = Field(None, max_length=64)  # Можем обновить Login
-    Password: Optional[str] = Field(None, max_length=64)  # Можем обновить Password
-    Name: Optional[str] = Field(None, max_length=64)  # Можем обновить Name
+    Login: Optional[str] = Field(None, max_length=64)  
+    Password: Optional[str] = Field(None, max_length=64)  
+    Name: Optional[str] = Field(None, max_length=64)  
 
     class Config:
-        from_attributes = True  # Для поддержки работы с объектами БД
+        from_attributes = True  
 
 class UserProfile(BaseModel):
     id: UUID
     login: str
     name: str
-    roleId: UUID  # предполагается, что это UUID
+    roleId: UUID  
     couponId: Optional[UUID] = None
     banned: bool
 
@@ -175,5 +175,5 @@ class User(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
