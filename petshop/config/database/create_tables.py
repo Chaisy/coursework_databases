@@ -10,7 +10,7 @@ class TableCreator:
                 Name VARCHAR (64) NOT NULL UNIQUE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -21,7 +21,7 @@ class TableCreator:
                 Sale INTEGER NOT NULL UNIQUE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -37,7 +37,7 @@ class TableCreator:
                 Banned BOOLEAN DEFAULT FALSE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -49,7 +49,7 @@ class TableCreator:
                 Goods UUID[] DEFAULT '{}'
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -60,7 +60,7 @@ class TableCreator:
                 Naming VARCHAR (64) NOT NULL UNIQUE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -71,7 +71,7 @@ class TableCreator:
                 Type VARCHAR (64) NOT NULL UNIQUE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -82,7 +82,7 @@ class TableCreator:
                 Title VARCHAR(64) NOT NULL UNIQUE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -96,7 +96,7 @@ class TableCreator:
                 AnimalId UUID REFERENCES Animals (Id) ON DELETE CASCADE
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -108,7 +108,7 @@ class TableCreator:
                 Goods UUID[] DEFAULT ARRAY[]::UUID[]
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -123,7 +123,7 @@ class TableCreator:
                 UNIQUE (OrderId, GoodId)
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod
@@ -137,7 +137,7 @@ class TableCreator:
                 UNIQUE (CartId, GoodId)
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     @staticmethod
     async def create_logging_table():
@@ -150,7 +150,7 @@ class TableCreator:
             Result VARCHAR(255)
             );
             '''
-        await Database.connection.execute(query)
+        await Database.execute(query)
 
     
     @staticmethod

@@ -37,11 +37,14 @@ class GoodBase(BaseModel):
     categoryOfGoodId: UUID
     animalId: UUID
     price: float
+    imageURL: str  # Новое поле для хранения URL изображения
+
 
 class GoodCreate(GoodBase):
     class Config:
         from_attributes = True
         alias_generator = lambda name: name.lower()
+
 
 class GoodUpdate(BaseModel):
     title: Optional[str] = None
@@ -49,9 +52,7 @@ class GoodUpdate(BaseModel):
     categoryOfGoodId: Optional[UUID] = None
     animalId: Optional[UUID] = None
     price: Optional[float] = None
-
-
-
+    imageURL: Optional[str] = None
 
 class Good(GoodBase):
     id: UUID
@@ -144,12 +145,12 @@ class UserCreate(BaseModel):
         from_attributes = True
 
 class UserUpdate(BaseModel):
-    Login: Optional[str] = Field(None, max_length=64)  
-    Password: Optional[str] = Field(None, max_length=64)  
-    Name: Optional[str] = Field(None, max_length=64)  
+    login: Optional[str] = Field(None, max_length=64)
+    password: Optional[str] = Field(None, max_length=64)
+    name: Optional[str] = Field(None, max_length=64)
 
     class Config:
-        from_attributes = True  
+        from_attributes = True
 
 class UserProfile(BaseModel):
     id: UUID
@@ -166,6 +167,9 @@ class UserProfile(BaseModel):
 class User(BaseModel):
     id: UUID
     name: str
+    login:str
+    roleid : UUID
+    couponid: Optional[UUID] = None
     banned: bool
 
     class Config:

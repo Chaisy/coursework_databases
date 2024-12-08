@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Data</title>
+     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header class="text-white py-3 bg-primary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">Admin panel</h1>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="../index.html" class="nav-link btn btn-outline-light ml-3">Home</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="container my-4">
+
+        <!-- Фирмы -->
+        <section id="firmsSection" class="my-4">
+            <h2>Firms</h2>
+            <form id="addFirmForm" class="form-inline">
+                <input type="text" id="firmNameInput" class="form-control mr-2" placeholder="Firm Name">
+                <button type="submit" class="btn btn-primary">Add Firm</button>
+            </form>
+            <ul id="firmsList" class="list-group my-3"></ul>
+        </section>
+
+        <!-- Категории -->
+        <section id="categoriesSection" class="my-4">
+            <h2>Categories</h2>
+            <form id="addCategoryForm" class="form-inline">
+                <input type="text" id="categoryNameInput" class="form-control mr-2" placeholder="Category Name">
+                <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+            <ul id="categoriesList" class="list-group my-3"></ul>
+        </section>
+
+        <!-- Животные -->
+        <section id="animalsSection" class="my-4">
+            <h2>Animals</h2>
+            <form id="addAnimalForm" class="form-inline">
+                <input type="text" id="animalTypeInput" class="form-control mr-2" placeholder="Animal Type">
+                <button type="submit" class="btn btn-primary">Add Animal</button>
+            </form>
+            <ul id="animalsList" class="list-group my-3"></ul>
+        </section>
+
+        <section>
+            <h2>Add good</h2>
+            <div>
+          <form id="addGoodForm">
+            <label>Good title:</label>
+            <input type="text" id="goodTitleInput" class="form-control" required>
+
+            <label>ID Firm:</label>
+            <input type="text" id="firmIdInput" class="form-control" required>
+
+            <label>ID Category:</label>
+            <input type="text" id="categoryIdInput" class="form-control" required>
+
+            <label>ID Animal:</label>
+            <input type="text" id="animalIdInput" class="form-control" required>
+
+            <label>Price:</label>
+            <input type="number" step="0.01" id="goodPriceInput" class="form-control" required>
+
+            <label>URL picture:</label>
+            <input type="url" id="goodImageURLInput" class="form-control" required>
+
+            <button class="btn btn-success mt-2">Add good</button>
+          </form>
+        </div>
+
+        <ul id="goodsList" class="list-group my-3"></ul>
+        </section>
+        <section>
+            <h2>Edit good</h2>
+            <div id="editGoodFormContainer" style="display:none;">
+  <form>
+    <label>Good title:</label>
+    <input type="text" id="editGoodTitleInput" class="form-control">
+    <label>ID Firm:</label>
+    <input type="text" id="editFirmIdInput" class="form-control">
+    <label>ID Category:</label>
+    <input type="text" id="editCategoryIdInput" class="form-control">
+    <label>ID Animal:</label>
+    <input type="text" id="editAnimalIdInput" class="form-control">
+    <label>Price:</label>
+    <input type="number" step="0.01" id="editGoodPriceInput" class="form-control">
+    <label>URL picture:</label>
+    <input type="url" id="editGoodImageURLInput" class="form-control">
+    <button class="btn btn-success mt-2" id="editGoodFormSubmit">Save</button>
+  </form>
+</div>
+
+
+        </section>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="../js/data.js"></script>
+</body>
+</html>

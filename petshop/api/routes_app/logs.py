@@ -19,7 +19,7 @@ async def get_logs(current_admin: TokenData = Depends(get_admin_user)):
     return logs
 
 
-@router.get("/logs/user/{user_id}", response_model=List[LogResponse])
+@router.get("/{user_id}", response_model=List[LogResponse])
 async def get_logs_by_user(user_id: UUID,
                            current_admin: TokenData = Depends(get_admin_user)):
     logs = await DatabaseQueries.get_logging_by_user(user_id)

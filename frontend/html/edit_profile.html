@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-white py-3 bg-primary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">Edit profile</h1>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="../index.html" class="nav-link btn btn-outline-light ml-3">Home</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="container my-4">
+        <form id="editProfileForm">
+            <div class="form-group">
+                <label for="userName">Name</label>
+                <input type="text" id="userName" class="form-control" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="userLogin">Login</label>
+                <input type="text" id="userLogin" class="form-control" placeholder="Enter your login">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+        </form>
+    </div>
+    <script src="../js/edit_profile.js"></script>
+</body>
+</html>

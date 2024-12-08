@@ -1,8 +1,8 @@
 from datetime import timedelta
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Body
 from fastapi.security import OAuth2PasswordBearer
 from starlette import status
-
+from fastapi import Request
 from api.auth.token import (
     decode_access_token,
     Token,
@@ -35,13 +35,10 @@ async def get_admin_user(token: str = Depends(oauth2_scheme)):
         user = await DatabaseQueries.get_user_profile(user_id)
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-        print(user)
 
         
         role_id = user["roleid"]
-        print(role_id)
         role = await DatabaseQueries.get_role_by_id(role_id)
-        print(role)
 
         if not role or role != "admin":  
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access forbidden: Admin only")
@@ -97,14 +94,14 @@ async def get_me(current_user: TokenData = Depends(get_current_user)):
     )
 
 
-@router.patch("/user/me", response_model=dict)
+@router.patch("/me", response_model=dict)
 async def update_user_profile(
-    user_update: UserUpdate,
+    request:Request,
+    user_update: UserUpdate = Body(...),
     current_user: TokenData = Depends(get_current_user),
 ):
-    user_id = current_user.user_id  
+    user_id = current_user.user_id
 
-    
     update_data = user_update.dict(exclude_unset=True)
 
     

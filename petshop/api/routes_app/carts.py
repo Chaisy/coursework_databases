@@ -8,18 +8,22 @@ from api.routes_app.auth import get_current_user, get_admin_user
 from config.database.queries_table import DatabaseQueries
 from schemas.schemas import Cart, CartItemUpdate
 
+from config.project_config import Database
+from schemas.schemas import Good
+
 router = APIRouter()
 
-@router.get("/carts/{user_id}", response_model=Cart)
+@router.get("/{user_id}", response_model=Cart)
 async def get_cart_by_user_id(user_id: UUID,
-                              current_admin: TokenData = Depends(get_admin_user)):
+                              current_admin: TokenData = Depends(get_current_user)):
+    print(user_id)
     cart = await DatabaseQueries.get_cart_by_user_id(user_id)
     if cart:
         return cart
     raise HTTPException(status_code=404, detail="Cart not found")
 
 
-@router.post("/cart/add-good", response_model=dict)
+@router.post("/add_good", response_model=dict)
 async def add_good_to_cart(item: CartItemUpdate,
                            current_admin: TokenData = Depends(get_current_user)):
     """
@@ -31,7 +35,7 @@ async def add_good_to_cart(item: CartItemUpdate,
     return result
 
 
-@router.post("/cart/remove-good", response_model=dict)
+@router.post("/remove-good", response_model=dict)
 async def remove_good_from_cart(item: CartItemUpdate,
                                 current_admin: TokenData = Depends(get_current_user)):
     """
@@ -43,9 +47,22 @@ async def remove_good_from_cart(item: CartItemUpdate,
     return result
 
 
-@router.get("/carts/{cart_id}/goods", response_model=List[UUID])
+@router.get("/{cart_id}/goods", response_model=List[UUID])
 async def get_cart_goods(cart_id: UUID, current_admin: TokenData = Depends(get_current_user)):
     goods = await DatabaseQueries.get_cart_goods(cart_id)  
     if goods is None:
         raise HTTPException(status_code=404, detail="Cart not found or no goods in cart")
     return goods
+
+
+@router.get("/goods/{good_id}", response_model=Good)
+async def get_good(good_id: UUID):
+    query = """
+        SELECT Id, Title, Price, ImageUrl
+        FROM Goods
+        WHERE Id = $1;
+    """
+    good = await Database.fetchrow(query, good_id)
+    if good is None:
+        raise HTTPException(status_code=404, detail="Good not found")
+    return good

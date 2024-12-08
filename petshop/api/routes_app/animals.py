@@ -39,14 +39,14 @@ async def get_all_animals():
 
 @router.get("/{animal_id}", response_model=dict)
 async def get_animal_by_id(animal_id: UUID,
-                           current_admin: TokenData = Depends(get_current_user)):
+                           ):
     animal = await DatabaseQueries.get_animal(animal_id)
     if not animal:
         raise HTTPException(status_code=404, detail="Animal not found")
     return animal
 
 
-@router.post("/animals", response_model=Animal)
+@router.post("/", response_model=Animal)
 async def create_animal(animal: AnimalCreate,
                         current_admin: TokenData = Depends(get_admin_user)):
     if not animal.type:

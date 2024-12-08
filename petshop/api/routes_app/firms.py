@@ -10,8 +10,8 @@ from schemas.schemas import FirmCreate, Firm
 
 router = APIRouter()
 
-@router.get("/firms", response_model=List[dict])
-async def get_all_firms(current_admin: TokenData = Depends(get_current_user)):
+@router.get("/", response_model=List[dict])
+async def get_all_firms():
     
     firms = await DatabaseQueries.get_all_firms()
 
@@ -22,13 +22,13 @@ async def get_all_firms(current_admin: TokenData = Depends(get_current_user)):
 
 @router.get("/firms/{firm_id}", response_model=dict)
 async def get_firm_by_id(firm_id: UUID,
-                         current_admin: TokenData = Depends(get_current_user)):
+                         ):
     firm = await DatabaseQueries.get_firm(firm_id)
     if not firm:
         raise HTTPException(status_code=404, detail="Firm not found")
     return firm
 
-@router.post("/firms", response_model=Firm)
+@router.post("/", response_model=Firm)
 async def create_firm(firm: FirmCreate,
                       current_admin: TokenData = Depends(get_admin_user)):
     if not firm.naming:
@@ -42,7 +42,7 @@ async def create_firm(firm: FirmCreate,
     return firm_data
 
 
-@router.delete("/firms/{firm_id}", response_model=dict)
+@router.delete("/{firm_id}", response_model=dict)
 async def delete_firm_by_id(firm_id: UUID,
                             current_admin: TokenData = Depends(get_admin_user)):
     is_deleted = await DatabaseQueries.delete_firm(firm_id)

@@ -24,7 +24,7 @@ class DatabaseQueries:
                 WHERE u.Name = $1;
             """
         try:
-            result = await Database.connection.fetch(query, user['name'])
+            result = await Database.fetch(query, user['name'])
             return [dict(row) for row in result] if result else []
         except Exception as e:
             print(f"Error in get_user_coupons: {e}")
@@ -39,7 +39,7 @@ class DatabaseQueries:
                 LEFT JOIN CategoriesOfGood c ON g.CategoryOfGoodId = c.Id;
             """
         try:
-            result = await Database.connection.fetch(query)
+            result = await Database.fetch(query)
             return [dict(row) for row in result]
         except Exception as e:
             print(f"Error in get_goods_with_category: {e}")
@@ -59,7 +59,7 @@ class DatabaseQueries:
                 WHERE a.Type = $1;
             """
         try:
-            result = await Database.connection.fetch(query, animal_get)
+            result = await Database.fetch(query, animal_get)
             return [dict(row) for row in result]
         except Exception as e:
             print(f"Error in get_good_by_animal: {e}")
@@ -68,9 +68,9 @@ class DatabaseQueries:
 
     @staticmethod
     async def get_users() -> List[dict]:
-        query = "SELECT u.Id, u.name, u.banned FROM Users u;"
+        query = "SELECT u.Id, u.name, u.banned, u.login, u.roleid, u.couponid FROM Users u;"
         try:
-            result = await Database.connection.fetch(query)
+            result = await Database.fetch(query)
             return [dict(row) for row in result]
         except Exception as e:
             print(f"Error in get_users: {e}")
@@ -80,7 +80,7 @@ class DatabaseQueries:
     async def get_user_profile(user_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Users WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, user_id)
+            result = await Database.fetchrow(query, user_id)
             if result:
                 return dict(result)
             return None
@@ -96,20 +96,19 @@ class DatabaseQueries:
         index = 1  
 
         
-        if update_data.get("Login"):
+        if update_data.get("login"):
             set_clause.append(f"Login = ${index}")
-            values.append(update_data["Login"])
+            values.append(update_data["login"])
             index += 1
-        if update_data.get("Password"):
+        if update_data.get("password"):
             set_clause.append(f"Password = ${index}")
-            values.append(update_data["Password"])
+            values.append(update_data["password"])
             index += 1
-        if update_data.get("Name"):
+        if update_data.get("name"):
             set_clause.append(f"Name = ${index}")
-            values.append(update_data["Name"])
+            values.append(update_data["name"])
             index += 1
 
-        print(set_clause)
         
         if not set_clause:
             return False
@@ -121,11 +120,10 @@ class DatabaseQueries:
             WHERE Id = ${index}
             RETURNING Id;
         """
-        print(query)
         values.append(user_id)
 
         try:
-            result = await Database.connection.fetchrow(query, *values)
+            result = await Database.fetchrow(query, *values)
             return result is not None
         except Exception as e:
             print(f"Error in update_user: {e}")
@@ -142,7 +140,7 @@ class DatabaseQueries:
             DELETE FROM Users WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, user_id)
+            result = await Database.fetchrow(query, user_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_user: {e}")
@@ -158,7 +156,7 @@ class DatabaseQueries:
             """
         try:
             
-            result = await Database.connection.fetchrow(query, login, password, name, default_role_id)
+            result = await Database.fetchrow(query, login, password, name, default_role_id)
             if result:
                 
                 await DatabaseQueries.create_cart(result['id'])
@@ -174,7 +172,7 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_animals():
         query = "SELECT * FROM Animals;"
-        rows = await Database.connection.fetch(query)
+        rows = await Database.fetch(query)
         return [dict(row) for row in rows]
 
 
@@ -182,7 +180,7 @@ class DatabaseQueries:
     async def get_animal(animal_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Animals WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, animal_id)
+            result = await Database.fetchrow(query, animal_id)
             if result:
                 return dict(result)
             return None
@@ -198,8 +196,7 @@ class DatabaseQueries:
             RETURNING Id, Type;
         """
         try:
-            result = await Database.connection.fetchrow(query, animal_type)
-            print("DB Result:", result)  
+            result = await Database.fetchrow(query, animal_type)
 
             if result:
                 
@@ -215,7 +212,7 @@ class DatabaseQueries:
             DELETE FROM Animals WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, animal_id)
+            result = await Database.fetchrow(query, animal_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_animal: {e}")
@@ -224,14 +221,14 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_firms():
         query = "SELECT * FROM Firms;"
-        rows = await Database.connection.fetch(query)
+        rows = await Database.fetch(query)
         return [dict(row) for row in rows]
 
     @staticmethod
     async def get_firm(firm_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Firms WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, firm_id)
+            result = await Database.fetchrow(query, firm_id)
             if result:
                 return dict(result)
             return None
@@ -248,8 +245,7 @@ class DatabaseQueries:
             RETURNING Id, Naming;
         """
         try:
-            result = await Database.connection.fetchrow(query, firm_name)
-            print("DB Result:", result)  
+            result = await Database.fetchrow(query, firm_name)
 
             if result:
                 
@@ -265,7 +261,7 @@ class DatabaseQueries:
             DELETE FROM Firms WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, firm_id)
+            result = await Database.fetchrow(query, firm_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_firm: {e}")
@@ -274,14 +270,14 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_coupons():
         query = "SELECT * FROM Coupons;"
-        rows = await Database.connection.fetch(query)
+        rows = await Database.fetch(query)
         return [dict(row) for row in rows]
 
     @staticmethod
     async def get_coupon(coupon_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Coupons WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, coupon_id)
+            result = await Database.fetchrow(query, coupon_id)
             if result:
                 return dict(result)
             return None
@@ -298,7 +294,7 @@ class DatabaseQueries:
             RETURNING Id, Sale;
         """
         try:
-            result = await Database.connection.fetchrow(query, coupon_sale)
+            result = await Database.fetchrow(query, coupon_sale)
 
 
             if result:
@@ -315,7 +311,7 @@ class DatabaseQueries:
             DELETE FROM Coupons WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, coupon_id)
+            result = await Database.fetchrow(query, coupon_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_coupon: {e}")
@@ -325,14 +321,14 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_roles():
         query = "SELECT * FROM Roles;"
-        rows = await Database.connection.fetch(query)
+        rows = await Database.fetch(query)
         return [dict(row) for row in rows]
 
     @staticmethod
     async def get_role(role_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Roles WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, role_id)
+            result = await Database.fetchrow(query, role_id)
             if result:
                 return dict(result)
             return None
@@ -349,7 +345,7 @@ class DatabaseQueries:
             RETURNING Id, Name;
         """
         try:
-            result = await Database.connection.fetchrow(query, role_name)
+            result = await Database.fetchrow(query, role_name)
 
             if result:
                 
@@ -365,7 +361,7 @@ class DatabaseQueries:
             DELETE FROM Roles WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, role_id)
+            result = await Database.fetchrow(query, role_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_role: {e}")
@@ -375,14 +371,14 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_categories():
         query = "SELECT * FROM Categoriesofgood;"
-        rows = await Database.connection.fetch(query)
+        rows = await Database.fetch(query)
         return [dict(row) for row in rows]
 
     @staticmethod
     async def get_category(category_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Categoriesofgood WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, category_id)
+            result = await Database.fetchrow(query, category_id)
             if result:
                 return dict(result)
             return None
@@ -399,7 +395,7 @@ class DatabaseQueries:
             RETURNING Id, Title;
         """
         try:
-            result = await Database.connection.fetchrow(query, category_title)
+            result = await Database.fetchrow(query, category_title)
 
             if result:
                 
@@ -415,7 +411,7 @@ class DatabaseQueries:
             DELETE FROM Categoriesofgood WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, category_id)
+            result = await Database.fetchrow(query, category_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_role: {e}")
@@ -430,7 +426,7 @@ class DatabaseQueries:
         """
         try:
             
-            result = await Database.connection.fetchrow(query, user_id, [])
+            result = await Database.fetchrow(query, user_id, [])
             if result:
                 return dict(result)  
             return None
@@ -442,7 +438,7 @@ class DatabaseQueries:
     async def add_good_to_cart(cart_id: UUID, good_id: UUID) -> Optional[dict]:
         
         query_check_good = "SELECT 1 FROM Goods WHERE Id = $1 LIMIT 1;"
-        good_exists = await Database.connection.fetchval(query_check_good, good_id)
+        good_exists = await Database.fetchval(query_check_good, good_id)
 
         if not good_exists:
             raise HTTPException(status_code=404, detail="Good not found")
@@ -455,7 +451,7 @@ class DatabaseQueries:
             RETURNING Id, UserId, Goods;
         """
         try:
-            result = await Database.connection.fetchrow(query, good_id, cart_id)
+            result = await Database.fetchrow(query, good_id, cart_id)
             if result:
                 return dict(result)  
             return None
@@ -472,7 +468,7 @@ class DatabaseQueries:
             RETURNING Id, UserId, Goods;
         """
         try:
-            result = await Database.connection.fetchrow(query, good_id, cart_id)
+            result = await Database.fetchrow(query, good_id, cart_id)
             if result:
                 return dict(result)  
             return None
@@ -488,7 +484,7 @@ class DatabaseQueries:
             WHERE Id = $1;
         """
         try:
-            result = await Database.connection.fetchval(query, cart_id)
+            result = await Database.fetchval(query, cart_id)
             if result is not None:
                 return result  
             return None
@@ -501,7 +497,7 @@ class DatabaseQueries:
     async def get_cart_by_user_id(user_id: UUID) -> Optional[dict]:
         query = "SELECT * FROM Carts WHERE UserId = $1;"
         try:
-            result = await Database.connection.fetchrow(query, user_id)
+            result = await Database.fetchrow(query, user_id)
             if result:
                 return dict(result)  
             return None
@@ -515,7 +511,7 @@ class DatabaseQueries:
             DELETE FROM Carts WHERE Id = $1 RETURNING Id;
         """
         try:
-            result = await Database.connection.fetchrow(query, cart_id)
+            result = await Database.fetchrow(query, cart_id)
             return result is not None  
         except Exception as e:
             print(f"Error in delete_cart: {e}")
@@ -529,7 +525,7 @@ class DatabaseQueries:
             RETURNING Id, UserId, Goods;
         """
         try:
-            result = await Database.connection.fetchrow(query, user_id)
+            result = await Database.fetchrow(query, user_id)
             if result:
                 return dict(result)  
             return None
@@ -544,11 +540,27 @@ class DatabaseQueries:
             FROM Orders;
         """
         try:
-            results = await Database.connection.fetch(query)
+            results = await Database.fetch(query)
             return [dict(row) for row in results]
         except Exception as e:
             print(f"Error in get_all_orders: {e}")
             return []
+
+    @staticmethod
+    async def get_order_by_id1(order_id: UUID):
+        query = "SELECT * FROM Orders WHERE Id = $1"
+        result = await Database.fetchrow(query, order_id)
+        return result
+
+    @staticmethod
+    async def delete_order(order_id: UUID):
+        query = "DELETE FROM Orders WHERE Id = $1 RETURNING Id"
+        try:
+            result = await Database.fetchval(query, order_id)
+            return result is not None
+        except Exception as e:
+            print(f"Error deleting order {order_id}: {e}")
+            return False
 
     @staticmethod
     async def add_good_to_order(user_id: UUID, good_id: UUID) -> Optional[dict]:
@@ -563,7 +575,7 @@ class DatabaseQueries:
             FROM Carts
             WHERE UserId = $1;
         """
-        cart_id = await Database.connection.fetchval(query_get_cart, user_id)
+        cart_id = await Database.fetchval(query_get_cart, user_id)
         if cart_id:
             await DatabaseQueries.remove_good_from_cart(cart_id, good_id)
 
@@ -573,7 +585,7 @@ class DatabaseQueries:
             FROM Orders
             WHERE UserId = $1 AND cardinality(Goods) > 0;
         """
-        existing_order_id = await Database.connection.fetchval(query_get_order, user_id)
+        existing_order_id = await Database.fetchval(query_get_order, user_id)
 
         
         if not existing_order_id:
@@ -583,7 +595,7 @@ class DatabaseQueries:
                 RETURNING Id, UserId, Goods;
             """
             try:
-                result = await Database.connection.fetchrow(create_order_query, user_id, good_id)
+                result = await Database.fetchrow(create_order_query, user_id, good_id)
                 if result:
                     return dict(result)  
                 return None
@@ -599,7 +611,7 @@ class DatabaseQueries:
                 RETURNING Id, UserId, Goods;
             """
             try:
-                result = await Database.connection.fetchrow(add_good_query, good_id, existing_order_id)
+                result = await Database.fetchrow(add_good_query, good_id, existing_order_id)
                 if result:
                     return dict(result)  
                 return None
@@ -617,7 +629,7 @@ class DatabaseQueries:
             );
         """
         try:
-            result = await Database.connection.fetchval(query, good_id)
+            result = await Database.fetchval(query, good_id)
             return result
         except Exception as e:
             print(f"Error in check_good_exists: {e}")
@@ -632,7 +644,7 @@ class DatabaseQueries:
             RETURNING Id, UserId, Goods;
         """
         try:
-            result = await Database.connection.fetchrow(query, good_id, order_id)
+            result = await Database.fetchrow(query, good_id, order_id)
 
             if result:
                 
@@ -641,7 +653,7 @@ class DatabaseQueries:
                         DELETE FROM Orders
                         WHERE Id = $1;
                     """
-                    await Database.connection.execute(delete_order_query, order_id)
+                    await Database.execute(delete_order_query, order_id)
                     return {"detail": "Order deleted because it was empty"}
                 return dict(result)  
             return None
@@ -657,7 +669,8 @@ class DatabaseQueries:
             WHERE Id = $1;
         """
         try:
-            result = await Database.connection.fetchval(query, order_id)
+            print(f"Result from database for order {order_id}: {Database.fetchval(query, order_id)}")
+            result = await Database.fetchval(query, order_id)
             if result is not None:
                 return result  
             return None
@@ -673,7 +686,8 @@ class DatabaseQueries:
             WHERE UserId = $1;
         """
         try:
-            results = await Database.connection.fetch(query, user_id)
+            results = await Database.fetch(query, user_id)
+            print(f"result:{results}")
             return [dict(row) for row in results]
         except Exception as e:
             print(f"Error in get_orders_by_user_id: {e}")
@@ -686,7 +700,7 @@ class DatabaseQueries:
             WHERE Id = $1;
         """
         try:
-            result = await Database.connection.execute(query, order_id)
+            result = await Database.execute(query, order_id)
             return result == "DELETE 1"
         except Exception as e:
             print(f"Error in remove_order: {e}")
@@ -696,11 +710,11 @@ class DatabaseQueries:
     @staticmethod
     async def get_all_goods() -> List[Good]:
         query = """
-                SELECT g.Id, g.Title, g.FirmId, g.CategoryOfGoodId, g.AnimalId, g.Price
+                SELECT g.Id, g.Title, g.FirmId, g.CategoryOfGoodId, g.AnimalId, g.Price, g.ImageURL
                 FROM Goods g;
             """
         try:
-            results = await Database.connection.fetch(query)
+            results = await Database.fetch(query)
             return [Good(**result) for result in results]
         except Exception as e:
             print(f"Error in get_all_goods: {e}")
@@ -709,11 +723,11 @@ class DatabaseQueries:
     @staticmethod
     async def get_good_by_id(good_id: UUID) -> Optional[Good]:
         query = """
-                SELECT g.Id, g.Title, g.FirmId, g.CategoryOfGoodId, g.AnimalId, g.Price
+                SELECT g.Id, g.Title, g.FirmId, g.CategoryOfGoodId, g.AnimalId, g.Price, g.ImageURL
                 FROM Goods g WHERE g.Id = $1;
             """
         try:
-            result = await Database.connection.fetchrow(query, good_id)
+            result = await Database.fetchrow(query, good_id)
             if result:
                 return Good(**result)
             return None
@@ -727,7 +741,7 @@ class DatabaseQueries:
     async def delete_good(good_id: UUID) -> bool:
         query = "DELETE FROM Goods WHERE Id = $1 RETURNING Id;"
         try:
-            result = await Database.connection.fetchrow(query, good_id)
+            result = await Database.fetchrow(query, good_id)
             if result:
                 return True
             return False
@@ -739,7 +753,7 @@ class DatabaseQueries:
     async def update_good(good_id: UUID, good_update: GoodUpdate) -> Optional[Good]:
         
         query_get_current = "SELECT * FROM Goods WHERE Id = $1;"
-        current_good = await Database.connection.fetchrow(query_get_current, good_id)
+        current_good = await Database.fetchrow(query_get_current, good_id)
         if not current_good:
             raise HTTPException(status_code=404, detail="Good not found")
 
@@ -767,7 +781,7 @@ class DatabaseQueries:
                 FROM Goods
                 WHERE Title = $1 AND Id != $2;
             """
-            existing_good = await Database.connection.fetchval(existing_good_query, good_update.title, good_id)
+            existing_good = await Database.fetchval(existing_good_query, good_update.title, good_id)
             if existing_good:
                 raise HTTPException(status_code=400, detail="A good with this title already exists")
 
@@ -778,23 +792,25 @@ class DatabaseQueries:
             "categoryOfGoodId": good_update.categoryOfGoodId or current_good["categoryofgoodid"],
             "animalId": good_update.animalId or current_good["animalid"],
             "price": good_update.price or current_good["price"],
+            "imageURL": good_update.imageURL or current_good["imageurl"],
         }
 
         # Формируем запрос на обновление
         query_update = """
             UPDATE Goods
-            SET Title = $1, FirmId = $2, CategoryOfGoodId = $3, AnimalId = $4, Price = $5
-            WHERE Id = $6
-            RETURNING Id, Title, FirmId, CategoryOfGoodId, AnimalId, Price;
+            SET Title = $1, FirmId = $2, CategoryOfGoodId = $3, AnimalId = $4, Price = $5, ImageURL = $6
+            WHERE Id = $7
+            RETURNING Id, Title, FirmId, CategoryOfGoodId, AnimalId, Price, ImageURL;
         """
         try:
-            result = await Database.connection.fetchrow(
+            result = await Database.fetchrow(
                 query_update,
                 updated_values["title"],
                 updated_values["firmId"],
                 updated_values["categoryOfGoodId"],
                 updated_values["animalId"],
                 updated_values["price"],
+                updated_values["imageURL"],
                 good_id,
             )
             if result:
@@ -808,7 +824,7 @@ class DatabaseQueries:
     async def check_firm_exists(firm_id: UUID) -> bool:
         query = "SELECT 1 FROM Firms WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, firm_id)
+            result = await Database.fetchrow(query, firm_id)
             return result is not None
         except Exception as e:
             print(f"Error in check_firm_exists: {e}")
@@ -818,7 +834,7 @@ class DatabaseQueries:
     async def check_category_exists(category_id: UUID) -> bool:
         query = "SELECT 1 FROM CategoriesOfGood WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, category_id)
+            result = await Database.fetchrow(query, category_id)
             return result is not None
         except Exception as e:
             print(f"Error in check_category_exists: {e}")
@@ -828,7 +844,7 @@ class DatabaseQueries:
     async def check_animal_exists(animal_id: UUID) -> bool:
         query = "SELECT 1 FROM Animals WHERE Id = $1;"
         try:
-            result = await Database.connection.fetchrow(query, animal_id)
+            result = await Database.fetchrow(query, animal_id)
             return result is not None
         except Exception as e:
             print(f"Error in check_animal_exists: {e}")
@@ -854,20 +870,20 @@ class DatabaseQueries:
             FROM Goods
             WHERE Title = $1
         """
-        existing_good = await Database.connection.fetchval(existing_good_query, good.title)
+        existing_good = await Database.fetchval(existing_good_query, good.title)
 
         if existing_good:
             raise HTTPException(status_code=400, detail="A good with this title already exists")
 
         # Если все проверки пройдены, добавляем товар
         query = """
-            INSERT INTO Goods (Title, FirmId, CategoryOfGoodId, AnimalId, Price)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING Id, Title, FirmId, CategoryOfGoodId, AnimalId, Price;
+            INSERT INTO Goods (Title, FirmId, CategoryOfGoodId, AnimalId, Price, ImageURL)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING Id, Title, FirmId, CategoryOfGoodId, AnimalId, Price, ImageURL;
         """
         try:
-            result = await Database.connection.fetchrow(
-                query, good.title, good.firmId, good.categoryOfGoodId, good.animalId, good.price
+            result = await Database.fetchrow(
+                query, good.title, good.firmId, good.categoryOfGoodId, good.animalId, good.price, good.imageURL
             )
             if result:
                 return Good(**result)
@@ -883,7 +899,7 @@ class DatabaseQueries:
             ORDER BY Timestamp DESC;
         """
         try:
-            result = await Database.connection.fetch(query)
+            result = await Database.fetch(query)
             return [dict(record) for record in result]
         except Exception as e:
             print(f"Error in get_logging: {e}")
@@ -897,7 +913,7 @@ class DatabaseQueries:
             ORDER BY Timestamp DESC;
         """
         try:
-            result = await Database.connection.fetch(query, user_id)
+            result = await Database.fetch(query, user_id)
             return [dict(record) for record in result]
         except Exception as e:
             print(f"Error in get_logging_by_user: {e}")
@@ -911,7 +927,7 @@ class DatabaseQueries:
             RETURNING Id, UserId, Role, Action, Timestamp,  Result;
         """
         try:
-            result = await Database.connection.fetchrow(
+            result = await Database.fetchrow(
                 query,
                 log.userid,
                 log.role,
@@ -938,7 +954,7 @@ class DatabaseQueries:
             WHERE Login = $1
         """
         try:
-            user = await Database.connection.fetchrow(query, username)
+            user = await Database.fetchrow(query, username)
             if not user:
                 return None
             # Преобразуем результат в словарь для работы с Python-кодом
@@ -959,7 +975,7 @@ class DatabaseQueries:
         query = "SELECT * FROM Roles WHERE Id = $1;"
         try:
             # Выполняем запрос к базе данных
-            result = await Database.connection.fetchrow(query, role_id)
+            result = await Database.fetchrow(query, role_id)
             print(result["name"])
             if result:
                 # Возвращаем результат в виде словаря
@@ -978,7 +994,7 @@ class DatabaseQueries:
             VALUES ($1, $2, $3, $4, $5)
         """
         try:
-            await Database.connection.execute(
+            await Database.execute(
                 query,
                 log.get("user_id"),
                 log.get("role"),
@@ -988,3 +1004,21 @@ class DatabaseQueries:
             )
         except Exception as e:
             print(f"Error in add_log_from_dict: {e}")
+
+    @staticmethod
+    async def get_user_by_id(user_id: UUID):
+        query = "SELECT * FROM Users WHERE Id = $1"
+        return await Database.fetchrow(query, user_id)
+
+    @staticmethod
+    async def update_user_ban_status(user_id: UUID, banned: bool):
+        query = "UPDATE Users SET Banned = $1 WHERE Id = $2 RETURNING Id"
+        try:
+            result = await Database.fetchval(query, banned, user_id)
+            return result is not None
+        except Exception as e:
+            print(f"Error updating ban status for user {user_id}: {e}")
+            return False
+
+
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <!-- Подключаем стили Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Подключаем пользовательские стили -->
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <!-- Хедер с навигацией -->
+    <header class="text-white py-3">
+        <div class="container">
+            <h1 class="mb-0">Product Details</h1>
+        </div>
+    </header>
+
+    <main class="container my-4">
+        <div class="row">
+            <div class="col-md-6">
+                <img id="productImage" src="" class="img-fluid" alt="Product Image">
+            </div>
+            <div class="col-md-6">
+                <h2 id="productTitle"></h2>
+                <p id="productPrice" class="lead"></p>
+                <p><strong>Category:</strong> <span id="productCategory">Loading...</span></p>
+                <p><strong>Firm:</strong> <span id="productFirm">Loading...</span></p>
+                <p><strong>Animal:</strong> <span id="productAnimal">Loading...</span></p>
+                <button id="addToCartButton" class="btn btn-primary">Add to Cart</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+
+        // Fetch details about the product and the mappings for related fields
+        async function fetchProductDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            try {
+                const response = await fetch(`${API_URL}/goods/${productId}`);
+                const product = await response.json();
+
+                // Заполняем базовые данные
+                document.getElementById('productImage').src = product.imageurl;
+                document.getElementById('productTitle').textContent = product.title;
+                document.getElementById('productPrice').textContent = `$${product.price}`;
+
+                // Загрузим связанные данные
+                const [animals, firms, categories] = await Promise.all([
+                    fetch(`${API_URL}/animals/`).then(response => response.json()),
+                    fetch(`${API_URL}/firms/`).then(response => response.json()),
+                    fetch(`${API_URL}/categories/`).then(response => response.json())
+                ]);
+
+                const animalMap = animals.reduce((map, animal) => {
+                    map[animal.id] = animal.type;
+                    return map;
+                }, {});
+
+                const firmMap = firms.reduce((map, firm) => {
+                    map[firm.id] = firm.naming;
+                    return map;
+                }, {});
+
+                const categoryMap = categories.reduce((map, category) => {
+                    map[category.id] = category.title;
+                    return map;
+                }, {});
+
+                // Сопоставляем данные из мапов
+                const productCategory = categoryMap[product.categoryofgoodid] || 'N/A';
+                const productFirm = firmMap[product.firmid] || 'N/A';
+                const productAnimal = animalMap[product.animalid] || 'N/A';
+
+                // Заполняем UI
+                document.getElementById('productCategory').textContent = productCategory;
+                document.getElementById('productFirm').textContent = productFirm;
+                document.getElementById('productAnimal').textContent = productAnimal;
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                console.log('Failed to load product details');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProductDetails);
+    </script>
+</body>
+
+</html>

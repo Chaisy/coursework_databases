@@ -1,0 +1,74 @@
+
+.bg-primary{
+    background: #a5b6c7 !important;
+}
+.bg-success{
+     background: #a5b6c7 !important;
+}
+.text-white.py-3.bg-primary{
+     background: #a5b6c7 !important;
+}
+.btn.btn-primary{
+    background: #a5b6c7 !important;
+    border: #8395a6;
+}
+.btn-success {
+    color: #fff !important;
+    background-color: #a5b6c7 !important;
+    border-color: #8395a6 !important;
+}
+
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #a5b6c7;
+    color: #000000;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Стили для навигационного меню */
+.navbar-nav .dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+.card {
+    width: 100%;
+    aspect-ratio: 1; /* Квадратная форма карточек */
+}
+
+.card img {
+    height: 100%;
+    object-fit: cover;
+}
+/* Стили для страницы детали товара */
+#productImage {
+    max-height: 400px;
+    object-fit: contain;
+}
+
+main p {
+    font-size: 1.1rem;
+}

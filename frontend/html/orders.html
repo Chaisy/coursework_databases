@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-white py-3 bg-primary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">Orders</h1>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="../index.html" class="nav-link btn btn-outline-light ml-3">Home</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main class="container mt-4">
+        <table id="ordersTable" class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>User ID</th>
+                    <th>Goods</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Данные будут загружаться динамически -->
+            </tbody>
+        </table>
+    </main>
+    <script src="../js/orders.js"></script>
+</body>
+</html>

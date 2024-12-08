@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-white py-3 bg-primary">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">Profile</h1>
+                <nav>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="../index.html" class="nav-link btn btn-outline-light ml-3">Home</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="container my-4">
+        <div class="">
+            <div class="card-body">
+                <h5 class="card-title">User Information</h5>
+                <p><strong>ID: </strong><span id="userId">Loading...</span></p>
+                <p><strong>Login: </strong><span id="userLogin">Loading...</span></p>
+                <p><strong>Name: </strong><span id="userName">Loading...</span></p>
+                <p><strong>Role ID: </strong><span id="userRoleId">Loading...</span></p>
+                <p><strong>Coupon ID: </strong><span id="userCouponId">Loading...</span></p>
+                <p><strong>Banned: </strong><span id="userBanned">Loading...</span></p>
+                <button id="logout" class="btn btn-danger mt-3">Log Out</button>
+                <button id="editProfile" class="btn btn-primary mt-3" style="background-color: #8395a6; border: #8395a6">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/my_profile.js"></script>
+</body>
+</html>

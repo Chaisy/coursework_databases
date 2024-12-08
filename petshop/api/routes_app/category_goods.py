@@ -11,7 +11,7 @@ from schemas.schemas import CategoryCreate, Category
 router = APIRouter()
 
 @router.get("/", response_model=List[dict])
-async def get_all_categories(current_admin: TokenData = Depends(get_current_user)):
+async def get_all_categories():
     
     categories = await DatabaseQueries.get_all_categories()
 
@@ -22,7 +22,7 @@ async def get_all_categories(current_admin: TokenData = Depends(get_current_user
 
 @router.get("/{category_id}", response_model=dict)
 async def get_category_by_id(category_id: UUID,
-                             current_admin: TokenData = Depends(get_current_user)):
+                             ):
     category = await DatabaseQueries.get_category(category_id)
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")

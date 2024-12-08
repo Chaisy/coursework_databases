@@ -9,22 +9,22 @@ from schemas.schemas import GoodCreate, GoodUpdate, Good
 
 router = APIRouter()
 
-@router.get("/goods", response_model=List[Good])
-async def get_all_goods(current_admin: TokenData = Depends(get_current_user)):
+@router.get("/", response_model=List[Good])
+async def get_all_goods():
     goods = await DatabaseQueries.get_all_goods()
     if goods:
         return goods
     raise HTTPException(status_code=404, detail="Goods not found")
 
-@router.get("/goods/{good_id}", response_model=Good)
+@router.get("/{good_id}", response_model=Good)
 async def get_good_by_id(good_id: UUID,
-                         current_admin: TokenData = Depends(get_current_user)):
+                         ):
     good = await DatabaseQueries.get_good_by_id(good_id)
     if good:
         return good
     raise HTTPException(status_code=404, detail="Good not found")
 
-@router.post("/goods", response_model=Good)
+@router.post("/", response_model=Good)
 async def add_good(good: GoodCreate,
                    current_admin: TokenData = Depends(get_admin_user)):
     new_good = await DatabaseQueries.add_good(good)
@@ -32,7 +32,7 @@ async def add_good(good: GoodCreate,
         return new_good
     raise HTTPException(status_code=400, detail="Error creating good")
 
-@router.delete("/goods/{good_id}", response_model=dict)
+@router.delete("/{good_id}", response_model=dict)
 async def delete_good(good_id: UUID,
                       current_admin: TokenData = Depends(get_admin_user)):
     success = await DatabaseQueries.delete_good(good_id)

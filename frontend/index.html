@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Shop</title>
+    <!-- Подключаем стили Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Подключаем пользовательские стили -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Хедер с навигацией -->
+    <header class="text-white py-3 bg-primary">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="mb-0">Pet Shop</h1>
+            <nav>
+                <ul class="nav">
+                    <!-- Кнопка "All" для сброса фильтров -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-white" onclick="fetchGoods()">All</a>
+                    </li>
+                    <!-- Меню Animals -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="animalsMenu" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Animals</a>
+                        <div class="dropdown-menu" aria-labelledby="animalsMenu" id="animalsDropdown"></div>
+                    </li>
+                    <!-- Меню Firms -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="firmsMenu" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Firms</a>
+                        <div class="dropdown-menu" aria-labelledby="firmsMenu" id="firmsDropdown"></div>
+                    </li>
+                    <!-- Меню Categories -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="categoriesMenu" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+                        <div class="dropdown-menu" aria-labelledby="categoriesMenu" id="categoriesDropdown"></div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="html/cart.html" id="cartButton" class="nav-link btn btn-outline-light ml-3">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="html/order.html" id="orderButton" class="nav-link btn btn-outline-light ml-3">Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="html/my_profile.html" id="myProfileButton" class="nav-link btn btn-outline-light ml-3" style="display: none;">My Profile</a>
+                    </li>
+                                        <li class="nav-item" style="display: none;" id="ordersButton">
+                        <a href="html/orders.html" class="nav-link btn btn-outline-light ml-3">Orders</a>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="logsButton">
+                        <a href="html/logs.html" class="nav-link btn btn-outline-light ml-3">Logs</a>
+                    </li>
+                    <li class="nav-item" style="display: none;" id="usersButton">
+                        <a href="html/users.html" class="nav-link btn btn-outline-light ml-3">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="html/auth.html" id="authButton" class="nav-link btn btn-outline-light ml-3">Log In</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+
+
+    <!-- Основное содержимое -->
+    <main class="container my-4">
+        <div class="row" id="content">
+            <!-- Здесь будут динамически добавляться карточки -->
+        </div>
+    </main>
+
+    <!-- Подключение скриптов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Подключаем пользовательский JS-код -->
+    <script src="js/app.js"></script>
+
+    <!-- Скрипт для динамической кнопки авторизации -->
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const authButton = document.getElementById('authButton');
+            const token = localStorage.getItem('accessToken');
+
+            if (token) {
+                // Пользователь залогинен, показываем "Log Out"
+                authButton.textContent = 'Log Out';
+                authButton.href = '#';
+                authButton.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch(`${API_URL}/logout`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        if (response.ok) {
+                            localStorage.removeItem('accessToken');
+                            console.log('Successfully logged out');
+                            window.location.reload(); // Перезагружаем страницу
+                        } else {
+                            const error = await response.json();
+                            console.error('Logout error:', error);
+                            console.log('Failed to log out. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error during logout:', error);
+                        console.log('An error occurred. Please try again later.');
+                    }
+                });
+            } else {
+                // Пользователь не залогинен, показываем "Log In"
+                authButton.textContent = 'Log In';
+                authButton.href = 'html/auth.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

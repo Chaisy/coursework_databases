@@ -21,7 +21,7 @@ async def get_all_roles(current_admin: TokenData = Depends(get_admin_user)):
     return roles
 
 @router.get("/{role_id}", response_model=dict)
-async def get_role_by_id(role_id: UUID, current_admin: TokenData = Depends(get_admin_user)):
+async def get_role_by_id(role_id: UUID):
     role = await DatabaseQueries.get_role(role_id)
     if not role:
         raise HTTPException(status_code=404, detail="Role not found")
